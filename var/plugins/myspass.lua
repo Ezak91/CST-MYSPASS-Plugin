@@ -77,13 +77,11 @@ function decodeImage(b64Image)
 	local repData = "data:image/" .. imgTyp .. ";base64,"
 	local b64Data = string.gsub(b64Image, repData, "");
 
-	local tmpImg = os.tmpname()
-	local retImg = tmpImg .. "." .. imgTyp
+	local retImg = tmpPath .. "/" .. "icon" .. "." .. imgTyp;
 
 	local f = io.open(retImg, "w+")
 	f:write(dec(b64Data))
 	f:close()
-	os.remove(tmpImg)
 
 	return retImg
 end
