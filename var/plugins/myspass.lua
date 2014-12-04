@@ -46,7 +46,11 @@ function init()
 	os.execute("mkdir -p " .. tmpPath)
 	user_agent 			= "\"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0\""
 	wget_cmd 			= "wget -q -U " .. user_agent .. " -O "
+	wget_script_file = "/tmp/myspass_wget.sh";
+	wget_busy_file = "/tmp/myspass_wget.busy";
+	downl_ready_file = "/tmp/myspass_download_ready.lua";
 	myspass_png 		= decodeImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QUFDMzEwNjY3NEU0MTFFNEFCRjM4OEYxMTFCRDBDMzYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QUFDMzEwNjc3NEU0MTFFNEFCRjM4OEYxMTFCRDBDMzYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpBQUMzMTA2NDc0RTQxMUU0QUJGMzg4RjExMUJEMEMzNiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpBQUMzMTA2NTc0RTQxMUU0QUJGMzg4RjExMUJEMEMzNiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Po9xrpMAAAWPSURBVHjanFVZiFxFFD1Vb+3p6e5JJovjjJOoqIkiMW4x4obiAsmHBhGEqB8qUREF8yGKCCIioigqiFEEEQR3Ub/il1tIQDFixCRGYhJn1DhLerrnLf3qVZWnukeNYUC0mvse73W9c+8999xb4oZXt+PPJQSg+RNBiFQZzOYKHYFLLfxrSynOVEIMdTRkZjCZKb07N+LjHPJ9pUoNzwOMBlQGh0K0LqaPeZY2lmbWVyL/+XocLRdhAO35dOYhtUBC536hLxK5ur3MVKIKPAhjn5sPyxf2GHBrmYl5b3Etvq5arcCPIxg/QCEJDolZIxCWBqJglJ0SOimqKsieLdP8bhTlhYCdpP3tQEvx14MxBqHv7VgyUF0z2OhHFIeQYQjl+8gI3qaFWkCUzJAONPnqBApZEKEMklPEkeZ+m2MFhPyly3fXQdBjq0PwisTWkQX9a4YHaxioxnTQiz5n9A7cs65IAqrk/kAj9zUiUheQOiEkrDE1afTXpqNP5Ius6yBgfcgKYmvvWtKoXjU0UMVIPcYiOvDIfe4FaMEVUMCxkkvuZXQRQSPBjHkPLB3QuS0Vi1wsFWVzC7O42RVezpLPttJhEAaPDRJ8YX+M46oRTugPsagSoBr6jFKyWIB3tEm+I3UuCC8KIeIYqFSAah9kFN4kPO88BAFkYVgSITdW++KBmJSE5FzyD8PUDanRtld4dzdHmeU79wP3IKAY+Q0/BqIIlrSKPN2EdhOSkjwLUq73XRSMSHNzyo+mmXaTtCQMIKcVxFK00hl6pruqc2Uh/z4dMVunrGhkGKZRvwadzmWysPJc6/nnGIIrAmfku2V9TBuJaaLMEGWWDjIC5bQOuVZzztRRzgxpRFtj3fFVPHzZMFkJh63GObIU3hlKyNGCUXR1TnORTxF4mtaktelglvd0zpGzjumZyyx3cpkxWFzz8OHlS7A04rNkNlIsc31QUxRqm/Jzu0Pt+oGU6h7XDsRF7qianaMsdT3m3tF+JrpNgXOXAJ+u7HfI2MNnJ03qKvTT0oyVnsmPEyLuDz1snymxXFJBUW82KYI6MDciyECXsjGqcQ+BNYM6jZgPnQRsHPx76uxs8VKQbGuaflbYnQX07r3tYvXja+uY4EdvTBjsJ0CbfDtaug7m7m4tJNbtiwU2LACurP9z1MzQPj3Mj5OWtULs8Ttab/dKfD4+k6/+YCzB5hUDWNsADhHtQCEwWfZU5PqgQaGMMrNTot7zfOs19m8xPgGZpl+yUbb5Sorfi9K8XdflPU99fwTXL6tjGWfGaCS6YP9ludnw0hgvPx8iv/JtY+Q+mYmQKgi+KIty229TCe7dOYX/u55pA999tQ+YnEykFC960kAqSkaxI1t5ublqFT74fgr37Wr9Z/B3C+CJz38FfthHZrwHrCdmaVTSmxN/HWdCqc0wnadsVuDsFYvwyvkLcNa/0ERcPE2IJ3eMYXrvQfhR3+u6r7KR02FOquvuRPeAcJNwcAQ4+ezbcPqal+GGFFldeepi3Dhaw8ULgeWcZ86fk/kBEr5jyuKtHyfw7aFmtxO98d1b7E/f3GEP/9TTOJt3Xi0EZ15ykb3l0Y/K5asGkMyyGSi7WgiPE7ZB+Wil0Uo7sN0hxXNi4iCCrS9syj9566VjsY514NViEdRynksLGvXsgg33J6uvvrUYPnUpYgqes797eChmmzYhJg+ljb1fvFPd8c4jdnx8fxaLsFlwh2Ex53EggkD4Q0NDcWnkgMxbwj/Sapn+yqri+NOuUItGV5lKfYSp+zJPDvvT47uC3/Z95h+Z3lbW+gJTHYh43DYnJn7PkqTjHJj5MpCVSujXao04DIM+IWVd6LIis5YQnbTCA6zq9nQbPIxSW6kbG0QdHpUtrVWaJEnWaqXFn+Bu/SHAAAxdsz7t/TiOAAAAAElFTkSuQmCC");
+	create_downloader();
 end
 
 -- ####################################################################
@@ -86,6 +90,39 @@ function decodeImage(b64Image)
 	return retImg
 end
 -- ####################################################################
+
+--Stream Download-Script erstellen
+function create_downloader()
+
+	local ds = io.open(wget_script_file, "w");
+	if ds then
+		ds:write(
+[[
+#!/bin/sh
+
+wget_busy_file=]] .. wget_busy_file .. "\n" .. [[
+movie_file="$2"
+stream_url="$1"
+
+netzkino_wget() {
+	touch $wget_busy_file
+	wget -c -O "${movie_file}" "${stream_url}"
+	rm $wget_busy_file
+	/tmp/myspass_download_ready.lua
+}
+
+if [ ! -e $wget_busy_file ]; then
+	netzkino_wget &
+fi
+]]
+		)
+		ds:close()
+
+		os.execute(string.format('chmod 755 %s', wget_script_file))
+	else
+		print(wget_script_file .. " konnte nicht angelegt werden")
+	end
+end
 
 function readFile(_File)
 	local fp, s
@@ -404,8 +441,14 @@ function showEpisodeInfo(_seriesName,_seasonName,_infoTable)
 	episodeInfo = "Staffel: " .. _infoTable.seasonNumber .. "\n" .. "Episode: " .. _infoTable.episodeNumber .. "\n";
 	episodeInfo = episodeInfo .. "Titel: " .. _infoTable.episodeTitle  .. "\n" .. "Dauer: " .. _infoTable.duration .. "\n";
 	episodeInfo = episodeInfo .. "Erstausstrahlung: " .. _infoTable.broadcastDate;
-
-	w = cwindow.new{x=x, y=y, dx=dx, dy=dy, title="Myspass.de", icon=myspass_png, btnRed="Film abspielen" };
+	
+	local wget_busy = io.open(wget_busy_file, "r")
+	if wget_busy then
+		wget_busy:close()
+		w = cwindow.new{x=x, y=y, dx=dx, dy=dy, title="Myspass.de", icon=myspass_png, btnRed="Film abspielen"};
+	else
+		w = cwindow.new{x=x, y=y, dx=dx, dy=dy, title="Myspass.de", icon=myspass_png, btnRed="Film abspielen", btnGreen="Download"};
+	end
 
 	local tmp_h = w:headerHeight() + w:footerHeight();
 	ct1 = ctext.new{parent=w, x=ct1_x, y=20, dx=dx-ct1_x-2, dy=dy-tmp_h-40, text=episodeInfo, mode = "ALIGN_TOP ",font_text=FONT['MENU']};
@@ -432,9 +475,16 @@ function showEpisodeInfo(_seriesName,_seasonName,_infoTable)
 
 	if infoAction == 1 then
 		playStream(_infoTable);
+		collectgarbage();
+		getEpisodes(_seriesName,_seasonName,seasonsTable,selectedSeason,0);
+	elseif infoAction == 2 then
+		downloadStream(_infoTable);
+		collectgarbage();
+	else
+		collectgarbage();
+		getEpisodes(_seriesName,_seasonName,seasonsTable,selectedSeason,0);
 	end
-	collectgarbage();
-	getEpisodes(_seriesName,_seasonName,seasonsTable,selectedSeason,0);
+
 end
 
 function getPicture(_pictureUrl)
@@ -448,6 +498,10 @@ function getInput(_id)
 		-- Taste Rot startet Stream
 		if (msg == RC['ok']) or (msg == RC['red']) then
 			infoAction = 1;
+			msg = RC['home'];
+		-- Taste Grün startet Download
+		elseif (msg == RC['green']) then
+			infoAction = 2;
 			msg = RC['home'];
 		elseif (msg == RC['up'] or msg == RC['page_up']) then
 			ct2:scroll{dir="up"};
@@ -466,6 +520,61 @@ function playStream(_infoTable)
 	n:PlayFile(title,url,info1,info2);
 end
 
+function downloadStream(_infoTable)
+	createDownlReadyFile();
+	local downloadPath = "/media/sda1/movies";
+	local streamUrl = _infoTable.streamUrl;
+	local fileName = _infoTable.SerieName .. "_S" .. _infoTable.seasonNumber .. "_E" .. _infoTable.episodeNumber .. "_" .. _infoTable.episodeTitle .. ".mp4";
+
+	local neutrinoConf = io.open("/var/tuxbox/config/neutrino.conf", "r")	
+	if neutrinoConf then
+		for l in neutrinoConf:lines() do
+			local key, val = l:match("^([^=#]+)=([^\n]*)")
+			if (key) then
+				if key == "network_nfs_recordingdir" then
+					downloadPath = val;
+				end
+			end
+		end
+		neutrinoConf:close();
+	end
+	fileName = downloadPath .. "/" .. fileName;
+	local h = hintbox.new{caption="Myspass.de", text="Download nach " .. fileName .. " gestartet" , icon=myspass_png};
+	h:paint();
+	local i = 0;
+	repeat
+		i = i + 1;
+		msg, data = n:GetInput(500)
+	until msg == RC.ok or msg == RC.home or i == 12
+	h:hide()
+
+	print(wget_script_file .. " " .. streamUrl .. " " .. fileName);
+	os.execute(wget_script_file .. " '" .. streamUrl .. "' '" .. fileName .. "'");
+end
+
+--File erstellen welches eine Benachrichtigung ausgibt, wenn der Download abgeschlossen wurde.
+function createDownlReadyFile()
+
+	local ds = io.open(downl_ready_file, "w");
+	if ds then
+		ds:write(
+[[
+#!/bin/luaclient
+n = neutrino()
+h = hintbox.new{caption="Myspass", text="Download beendet"}
+h:paint()
+repeat
+	msg, data = n:GetInput(500)
+until msg == RC.ok or msg == RC.home
+h:hide()
+]]
+		)
+		ds:close()
+	else
+		print(downl_ready_file .. " konnte nicht angelegt werden")
+	end
+	os.execute(string.format('chmod 755 %s', downl_ready_file))
+end
 
 function setEpisode(_episodeID)
 	selectedEpisode = _episodeID;
@@ -485,6 +594,7 @@ end
 -- Main
 --=====================
 init();
+createDownlReadyFile();
 getSeries();
 clear();
 posix.sync()
