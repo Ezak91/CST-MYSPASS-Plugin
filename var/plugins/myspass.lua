@@ -365,7 +365,7 @@ function getEpisodesMenu(_seriesName,_seasonName,_episodesTable,_offsetPage)
 		menuEpisodes:addItem{type = "forwarder", name = "Vorherige Seite", action = "previousEpisodesPage", icon = "gelb", directkey = RC["yellow"]}
 		menuEpisodes:addKey{directkey=RC["left"], action="previousEpisodesPage"};	
 	end
-	if maxPage < episodesCount then	
+	if maxPage <= episodesCount then	
 		menuEpisodes:addItem{type = "forwarder", name = "Nächste Seite", action = "nextEpisodesPage", icon = "blau", directkey = RC["blue"]}
 		menuEpisodes:addKey{directkey=RC["right"], action="nextEpisodesPage"};	
 	end
