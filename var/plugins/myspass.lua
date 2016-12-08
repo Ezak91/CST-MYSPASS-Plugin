@@ -145,7 +145,7 @@ function getSeries()
 	local seriesSourceCode = readFile(tmpFile);
 -- Parse Series from seriesSourceCode
 	i = 1;
-	for serie in string.gmatch(seriesSourceCode, "<div class=\"zettelBoxSmall\"(.-)</div>") do
+	for serie in string.gmatch(seriesSourceCode, "<div class=\"myspassTeaser _seasonId seasonlistItem \"(.-)</div>") do
 		seriesTable[i] = 
 			{
 				id = i;
