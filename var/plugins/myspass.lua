@@ -3,7 +3,7 @@
 
 	The MIT License (MIT)
 
-	Copyright (c) 2014 Ezak from www.coolstream.to
+	Copyright (c) 2014 Ezak
 
 	Icons by Tischi thx ;)
 
