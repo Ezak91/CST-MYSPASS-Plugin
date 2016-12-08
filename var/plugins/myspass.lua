@@ -303,7 +303,7 @@ function getSeasonsMenu(_title,_seasonTable,_offsetPage)
 	elseif selectedSeason == -1 then
 		getSeasonsMenu(_title,_seasonTable,_offsetPage+9);
 	else
-		getEpisodes(_title,trim(_seasonTable[tonumber(selectedSeason)].title),_seasonTable,selectedSeason,0);
+		getEpisodes(_title,trim(_seasonTable[tonumber(selectedSeason)].title),_seasonTable,selectedSeason);
 	end
 end
 
@@ -322,7 +322,7 @@ function setSeason(_serieID)
 	return MENU_RETURN["EXIT_ALL"];
 end
 
-function getEpisodes(_seriesName,_seasonName,_seasonTable,_selectedSeason,_page)
+function getEpisodes(_seriesName,_seasonName,_seasonTable,_selectedSeason)
 	local episodesTable = {};
 	local tmpFile = tmpPath .. "/myspass_episodes.txt"
 	local link = _seasonTable[tonumber(_selectedSeason)].link;
@@ -330,23 +330,16 @@ function getEpisodes(_seriesName,_seasonName,_seasonTable,_selectedSeason,_page)
 	local i = 1; 
 	local h = hintbox.new{caption="Myspass.de", text="Episoden werden geladen ...", icon=myspass_png};
 	h:paint();
-	while _page ~= -1 do
-		os.execute(wget_cmd .. tmpFile .. " '" .. link .. "&pageNumber=" .. _page .. "'");
-		local episodesSourceCode = readFile(tmpFile);
-		if string.match(episodesSourceCode,"<td class") then
-			for episode in string.gmatch(episodesSourceCode, "<td class=\"title\"(.-)<div class=\"relative\">") do
-				episodesTable[i] = 
-				{
-					id = i;
-					title = episode:match("/\">(.-)</a>");
-					link = baseUrl .. actionUrl .. episode:match("/(%d+)/");
-				};
-				i = i + 1; 
-			end
-			_page = _page + 1;
-		else
-			_page = -1;
-		end
+  os.execute(wget_cmd .. tmpFile .. " '" .. link .. "'");
+  local episodesSourceCode = readFile(tmpFile); 
+  for episode in string.gmatch(episodesSourceCode, "<div class=\"myspassTeaser _seasonId(.-)</a>") do
+    episodesTable[i] = 
+			{
+				id = i;
+				title = episode:match("title=\"(.-)\"");
+				link = baseUrl .. actionUrl .. episode:match("/(%d+)/");
+			};
+			i = i + 1; 
 	end
 	episodesCount = i - 1;
 	h:hide();
