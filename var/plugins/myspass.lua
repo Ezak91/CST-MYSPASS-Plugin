@@ -230,22 +230,28 @@ function getSeasons(_seriesTable,_selectedSerie)
 	local tmpFile = tmpPath .. "/myspass_seasons.txt"
 	local link = _seriesTable[tonumber(_selectedSerie)].link;
 	local name = _seriesTable[tonumber(_selectedSerie)].title;
-	local actionUrl = "/myspass/includes/php/ajax.php?v=2&ajax=true&action=";
+	local actionUrl = "/frontend/php/ajax.php?ajax=true&query=";
 	local h = hintbox.new{caption="Myspass.de", text="Staffeln werden geladen ...", icon=myspass_png};
 	h:paint();
 	os.execute(wget_cmd .. tmpFile .. " '" .. baseUrl .. link .. "'");
 	local seasonsSourceCode = readFile(tmpFile);
 -- parse seasons from seasons SourceCode
 	i = 1;
-	for season in string.gmatch(seasonsSourceCode, "data%-target=\"#episodesBySeason_full_episode(.-)</li>") do
-		seasonsTable[i] = 
-			{
-				id = i;
-				title = season:match(";\">(.-)</a>");
-				link = baseUrl .. actionUrl .. string.gsub(season:match("data%-query=\"(.-)&amp;id=\""),"&amp;","&");
-			};
-			i = i + 1; 
-	end
+	for season in string.gmatch(seasonsSourceCode, "baxx%-tabbes%-tab \"(.-)</li>") do
+    --only full episodes
+    category = season:match("data%-category=\"(.-)\"");
+    query = season:match("data%-query=\"(.-)\"");
+    seasonTitle = season:match(">(.*)");
+    if(category == "full_episode" and query ~= nil) then
+      seasonsTable[i] = 
+        {
+          id = i;
+          title = trim(seasonTitle);
+          link = baseUrl .. actionUrl .. string.gsub(query,"&amp;","&") .. "&sortBy=episode_desc";
+        };
+        i = i + 1; 
+    end
+  end
 	seasonCount = i-1;
 	h:hide();
 	getSeasonsMenu(name,seasonsTable,1);
