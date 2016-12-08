@@ -237,7 +237,7 @@ function getSeasons(_seriesTable,_selectedSerie)
 	local seasonsSourceCode = readFile(tmpFile);
 -- parse seasons from seasons SourceCode
 	i = 1;
-	for season in string.gmatch(seasonsSourceCode, "baxx%-tabbes%-tab \"(.-)</li>") do
+	for season in string.gmatch(seasonsSourceCode, "<li(.-)</li>") do
     --only full episodes
     category = season:match("data%-category=\"(.-)\"");
     query = season:match("data%-query=\"(.-)\"");
