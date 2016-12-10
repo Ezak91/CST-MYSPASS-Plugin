@@ -420,7 +420,7 @@ function getEpisodeInfo(_seriesName,_seasonName,_episodesTable,_selectedEpisode)
 	infoTable.episodeTitle = infos:match("<title><!%[CDATA%[(.-)%]%]></title>");
 	infoTable.description = infos:match("<description><!%[CDATA%[(.-)%]%]></description>");
 	infoTable.duration = infos:match("<duration><!%[CDATA%[(.-)%]%]></duration>");
-	infoTable.image = infos:match("<imagePreview><!%[CDATA%[(.-)%]%]></imagePreview>");
+	infoTable.image = string.gsub(infos:match("<imagePreview><!%[CDATA%[(.-)%]%]></imagePreview>"),"//","");
 	infoTable.streamUrl = infos:match("<url_flv><!%[CDATA%[(.-)%]%]></url_flv>");
 	infoTable.broadcastDate = infos:match("<broadcast_date><!%[CDATA%[(.-)%]%]></broadcast_date>");
 	h:hide();
@@ -453,7 +453,7 @@ function showEpisodeInfo(_seriesName,_seasonName,_infoTable)
 	ct1 = ctext.new{parent=w, x=ct1_x, y=20, dx=dx-ct1_x-2, dy=dy-tmp_h-40, text=episodeInfo, mode = "ALIGN_TOP ",font_text=FONT['MENU']};
 
 	fontHeight = n:FontHeight(FONT['MENU']);
-	y = y+28+fontHeight*4;
+	y = y+28+fontHeight*10;
 	ct2 = ctext.new{parent=w, x=20, y=y, dx=dx-20, dy=dy-tmp_h-40, text=_infoTable.description, mode = "ALIGN_TOP | ALIGN_SCROLL | DECODE_HTML"};
 
 	if _infoTable.image ~= nil then
