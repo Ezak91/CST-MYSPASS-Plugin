@@ -434,7 +434,7 @@ function showEpisodeInfo(_seriesName,_seasonName,_infoTable)
 	local y  = 70;
 	local dx = 1000;
 	local dy = 600;
-	local ct1_x = 300;
+	local ct1_x = 600;
 	infoAction = 0;
 
 	episodeInfo = "Staffel: " .. _infoTable.seasonNumber .. "\n" .. "Episode: " .. _infoTable.episodeNumber .. "\n";
@@ -462,7 +462,7 @@ function showEpisodeInfo(_seriesName,_seasonName,_infoTable)
 
 		local pic_x =  20
 		local pic_y =  35
-		local pic_w = 250
+		local pic_w = 534
 		local pic_h = 300
 		local image = tmpPath .. "/myspass_image.png";
 		local tmp_w;
