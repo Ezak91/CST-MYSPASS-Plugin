@@ -4,7 +4,9 @@
 	The MIT License (MIT)
 
 	Copyright (c) 2014 Ezak
-
+	
+	Modded by Don de Deckelwech (Thx ;) )
+	
 	Icons by Tischi thx ;)
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,27 +30,29 @@
 local posix = require "posix";
 
 function init()
-	n = neutrino();
-	serienCount 		= 0;
-	seasonCount         = 0;
-	episodesCount       = 0;
-	serieAction         = 0;
-	seasonAction        = 0;
-	episodeAction       = 0;
-	seriePage           = 0;
-	seriesTable      	= {};
-	seasonsTable        = {};
-	infoAction          = 0;
-	baseUrl				= "http://www.myspass.de"
-	tmpPath 			= "/tmp/myspass"
-	os.execute("rm -fr " .. tmpPath)
-	os.execute("sync")
-	os.execute("mkdir -p " .. tmpPath)
-	user_agent 			= "\"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0\""
-	wget_cmd 			= "wget -q -U " .. user_agent .. " -O "
-	wget_script_file = "/tmp/myspass_wget.sh";
-	wget_busy_file = "/tmp/myspass_wget.busy";
-	downl_ready_file = "/tmp/myspass_download_ready.lua";
+    n = neutrino();
+    Version             = "Myspass.de v1.04"
+    ItemsPerPage        = 10;
+    serienCount         = 0;
+    seasonCount         = 0;
+    episodesCount       = 0;
+    serieAction         = 0;
+    seasonAction        = 0;
+    episodeAction       = 0;
+    seriePage           = 0;
+    seriesTable         = {};
+    seasonsTable        = {};
+    infoAction          = 0;
+    baseUrl             = "http://www.myspass.de"
+    tmpPath             = "/tmp/myspass"
+    os.execute("rm -fr " .. tmpPath)
+    os.execute("sync")
+    os.execute("mkdir -p " .. tmpPath)
+    user_agent          = "\"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0\""
+    wget_cmd            = "wget -q -U " .. user_agent .. " -O "
+    wget_script_file    = "/tmp/myspass_wget.sh";
+    wget_busy_file      = "/tmp/myspass_wget.busy";
+    downl_ready_file    = "/tmp/myspass_download_ready.lua";
 	myspass_png 		= decodeImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QUFDMzEwNjY3NEU0MTFFNEFCRjM4OEYxMTFCRDBDMzYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QUFDMzEwNjc3NEU0MTFFNEFCRjM4OEYxMTFCRDBDMzYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpBQUMzMTA2NDc0RTQxMUU0QUJGMzg4RjExMUJEMEMzNiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpBQUMzMTA2NTc0RTQxMUU0QUJGMzg4RjExMUJEMEMzNiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Po9xrpMAAAWPSURBVHjanFVZiFxFFD1Vb+3p6e5JJovjjJOoqIkiMW4x4obiAsmHBhGEqB8qUREF8yGKCCIioigqiFEEEQR3Ub/il1tIQDFixCRGYhJn1DhLerrnLf3qVZWnukeNYUC0mvse73W9c+8999xb4oZXt+PPJQSg+RNBiFQZzOYKHYFLLfxrSynOVEIMdTRkZjCZKb07N+LjHPJ9pUoNzwOMBlQGh0K0LqaPeZY2lmbWVyL/+XocLRdhAO35dOYhtUBC536hLxK5ur3MVKIKPAhjn5sPyxf2GHBrmYl5b3Etvq5arcCPIxg/QCEJDolZIxCWBqJglJ0SOimqKsieLdP8bhTlhYCdpP3tQEvx14MxBqHv7VgyUF0z2OhHFIeQYQjl+8gI3qaFWkCUzJAONPnqBApZEKEMklPEkeZ+m2MFhPyly3fXQdBjq0PwisTWkQX9a4YHaxioxnTQiz5n9A7cs65IAqrk/kAj9zUiUheQOiEkrDE1afTXpqNP5Ius6yBgfcgKYmvvWtKoXjU0UMVIPcYiOvDIfe4FaMEVUMCxkkvuZXQRQSPBjHkPLB3QuS0Vi1wsFWVzC7O42RVezpLPttJhEAaPDRJ8YX+M46oRTugPsagSoBr6jFKyWIB3tEm+I3UuCC8KIeIYqFSAah9kFN4kPO88BAFkYVgSITdW++KBmJSE5FzyD8PUDanRtld4dzdHmeU79wP3IKAY+Q0/BqIIlrSKPN2EdhOSkjwLUq73XRSMSHNzyo+mmXaTtCQMIKcVxFK00hl6pruqc2Uh/z4dMVunrGhkGKZRvwadzmWysPJc6/nnGIIrAmfku2V9TBuJaaLMEGWWDjIC5bQOuVZzztRRzgxpRFtj3fFVPHzZMFkJh63GObIU3hlKyNGCUXR1TnORTxF4mtaktelglvd0zpGzjumZyyx3cpkxWFzz8OHlS7A04rNkNlIsc31QUxRqm/Jzu0Pt+oGU6h7XDsRF7qianaMsdT3m3tF+JrpNgXOXAJ+u7HfI2MNnJ03qKvTT0oyVnsmPEyLuDz1snymxXFJBUW82KYI6MDciyECXsjGqcQ+BNYM6jZgPnQRsHPx76uxs8VKQbGuaflbYnQX07r3tYvXja+uY4EdvTBjsJ0CbfDtaug7m7m4tJNbtiwU2LACurP9z1MzQPj3Mj5OWtULs8Ttab/dKfD4+k6/+YCzB5hUDWNsADhHtQCEwWfZU5PqgQaGMMrNTot7zfOs19m8xPgGZpl+yUbb5Sorfi9K8XdflPU99fwTXL6tjGWfGaCS6YP9ludnw0hgvPx8iv/JtY+Q+mYmQKgi+KIty229TCe7dOYX/u55pA999tQ+YnEykFC960kAqSkaxI1t5ublqFT74fgr37Wr9Z/B3C+CJz38FfthHZrwHrCdmaVTSmxN/HWdCqc0wnadsVuDsFYvwyvkLcNa/0ERcPE2IJ3eMYXrvQfhR3+u6r7KR02FOquvuRPeAcJNwcAQ4+ezbcPqal+GGFFldeepi3Dhaw8ULgeWcZ86fk/kBEr5jyuKtHyfw7aFmtxO98d1b7E/f3GEP/9TTOJt3Xi0EZ15ykb3l0Y/K5asGkMyyGSi7WgiPE7ZB+Wil0Uo7sN0hxXNi4iCCrS9syj9566VjsY514NViEdRynksLGvXsgg33J6uvvrUYPnUpYgqes797eChmmzYhJg+ljb1fvFPd8c4jdnx8fxaLsFlwh2Ex53EggkD4Q0NDcWnkgMxbwj/Sapn+yqri+NOuUItGV5lKfYSp+zJPDvvT47uC3/Z95h+Z3lbW+gJTHYh43DYnJn7PkqTjHJj5MpCVSujXao04DIM+IWVd6LIis5YQnbTCA6zq9nQbPIxSW6kbG0QdHpUtrVWaJEnWaqXFn+Bu/SHAAAxdsz7t/TiOAAAAAElFTkSuQmCC");
 	create_downloader();
 end
@@ -139,7 +143,7 @@ end
 function getSeries()
 	seriesTable = {};
 	local tmpFile = tmpPath .. "/myspass_series.txt"
-	local h = hintbox.new{caption="Myspass.de", text="Serien werden geladen ...", icon=myspass_png};
+	local h = hintbox.new{caption=Version, text="Serien werden geladen ...", icon=myspass_png};
 	h:paint();
 	os.execute(wget_cmd .. tmpFile .. " '" .. baseUrl .. "/ganze-folgen/'");
 	local seriesSourceCode = readFile(tmpFile);
@@ -163,11 +167,11 @@ function getSeriesMenu(_seriesTable, _offsetPage)
 	selectedSerie = 0;
 	serieAction = 0;
 	seriePage = _offsetPage;
-	maxPage = _offsetPage+9;
+	maxPage = _offsetPage+ItemsPerPage;
 	local numberText = "";
 	menuSeries = menu.new{name="Myspass Serien", icon=myspass_png};
 	if maxPage-1 > serienCount then
-		numberText = "Serie " .. _offsetPage .. " bis 70 von " .. serienCount;		
+		numberText = "Serie " .. _offsetPage .. " bis " .. serienCount .. " von " .. serienCount;		
 	else
 		numberText = "Serie " .. _offsetPage .. " bis " .. maxPage-1 .. " von " .. serienCount;
 	end
@@ -189,7 +193,7 @@ function getSeriesMenu(_seriesTable, _offsetPage)
 			serieName = _seriesTable[i].title;
 			menuSeries:addItem{type="forwarder", name=serieName, action="setSerie", id=i, icon=j, directkey=RC[tostring(j)]};
 			i = i+1;
-			j = j+1;
+			if j == 9 then j=0; else j = j+1; end
 	end
 
 	menuSeries:exec();
@@ -197,13 +201,13 @@ function getSeriesMenu(_seriesTable, _offsetPage)
 	if selectedSerie == 0 then
 		return MENU_RETURN["EXIT_ALL"];
 	elseif selectedSerie == -2 then
-		if _offsetPage-9 > 0 then
-			getSeriesMenu(_seriesTable,_offsetPage-9);
+		if _offsetPage-ItemsPerPage > 0 then
+			getSeriesMenu(_seriesTable,_offsetPage-ItemsPerPage);
 		else
 			getSeriesMenu(_seriesTable,1);
 		end
 	elseif selectedSerie == -1 then
-		getSeriesMenu(_seriesTable,_offsetPage+9);
+		getSeriesMenu(_seriesTable,_offsetPage+ItemsPerPage);
 	else
 		getSeasons(_seriesTable,selectedSerie);
 	end
@@ -261,7 +265,7 @@ function getSeasonsMenu(_title,_seasonTable,_offsetPage)
 	selectedSeason = 0;
 	seasonAction = 0;
 	local headerTitle = "Myspass.de " .. _title;
-	maxPage = _offsetPage+9;
+	maxPage = _offsetPage+ItemsPerPage;
 
 	menuSeasons = menu.new{name=headerTitle,icon=myspass_png};
 	local numberText = "Staffel Auswahl";
@@ -287,7 +291,7 @@ function getSeasonsMenu(_title,_seasonTable,_offsetPage)
 			seasonName = trim(_seasonTable[i].title);
 			menuSeasons:addItem{type="forwarder", name=seasonName, action="setSeason", id=i, icon=j, directkey=RC[tostring(j)]};
 			i = i+1;
-			j = j+1;
+			if j == 9 then j=0; else j = j+1; end
 	end
 
 	menuSeasons:exec();
@@ -295,13 +299,13 @@ function getSeasonsMenu(_title,_seasonTable,_offsetPage)
 	if selectedSeason == 0 then
 		getSeriesMenu(seriesTable,seriePage);
 	elseif selectedSeason == -2 then
-		if _offsetPage-9 > 0 then
-			getSeasonsMenu(_title,_seasonTable,_offsetPage-9);
+		if _offsetPage-ItemsPerPage > 0 then
+			getSeasonsMenu(_title,_seasonTable,_offsetPage-ItemsPerPage);
 		else
 			getSeasonsMenu(_title,_seasonTable,1);
 		end
 	elseif selectedSeason == -1 then
-		getSeasonsMenu(_title,_seasonTable,_offsetPage+9);
+		getSeasonsMenu(_title,_seasonTable,_offsetPage+ItemsPerPage);
 	else
 		getEpisodes(_title,trim(_seasonTable[tonumber(selectedSeason)].title),_seasonTable,selectedSeason);
 	end
@@ -350,7 +354,7 @@ function getEpisodesMenu(_seriesName,_seasonName,_episodesTable,_offsetPage)
 	selectedEpisode = 0;
 	episodeAction = 0;
 	local headerTitle = _seriesName .. " " .. _seasonName;
-	maxPage = _offsetPage+9;
+	maxPage = _offsetPage+ItemsPerPage;
 
 	menuEpisodes = menu.new{name=headerTitle,icon=myspass_png};
 	local numberText = "Episoden Auswahl";
@@ -376,7 +380,7 @@ function getEpisodesMenu(_seriesName,_seasonName,_episodesTable,_offsetPage)
 			episodeName = tostring(i) .. ". " .. trim(_episodesTable[i].title);
 			menuEpisodes:addItem{type="forwarder", name=episodeName, action="setEpisode", id=i, icon=j, directkey=RC[tostring(j)]};
 			i = i+1;
-			j = j+1;
+			if j == 9 then j=0; else j = j+1; end
 	end
 
 	menuEpisodes:exec();
@@ -384,13 +388,13 @@ function getEpisodesMenu(_seriesName,_seasonName,_episodesTable,_offsetPage)
 	if selectedEpisode == 0 then
 		getSeasons(seriesTable,selectedSerie);
 	elseif selectedEpisode == -2 then
-		if _offsetPage-9 > 0 then
-			getEpisodesMenu(_seriesName,_seasonName,_episodesTable,_offsetPage-9);
+		if _offsetPage-ItemsPerPage > 0 then
+			getEpisodesMenu(_seriesName,_seasonName,_episodesTable,_offsetPage-ItemsPerPage);
 		else
 			getEpisodesMenu(_seriesName,_seasonName,_episodesTable,1);
 		end
 	elseif selectedEpisode == -1 then
-		getEpisodesMenu(_seriesName,_seasonName,_episodesTable,_offsetPage+9);
+		getEpisodesMenu(_seriesName,_seasonName,_episodesTable,_offsetPage+ItemsPerPage);
 	else
 		getEpisodeInfo(_seriesName,_seasonName,_episodesTable,selectedEpisode);
 	end	
