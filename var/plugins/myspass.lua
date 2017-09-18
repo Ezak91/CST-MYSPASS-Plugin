@@ -153,7 +153,7 @@ function getSeries()
 		seriesTable[i] = 
 			{
 				id = i;
-				title = serie:match("alt=\"(.-)\"");
+				title = string.gsub(serie:match("alt=\"(.-)\""),"&amp;","&");
 				link = serie:match("<a href=\"(.-)\"");
 			};;
 			i = i + 1;
